@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tar -tzf void-colosseum-project.tar.gz)",
+      "Bash(wc -l /Users/zhangjingwei/Desktop/agentgame/*.py /Users/zhangjingwei/Desktop/agentgame/*.html /Users/zhangjingwei/Desktop/agentgame/*.sh)",
+      "Bash(python3 void_colosseum_sdk.py)",
+      "Bash(python3 void_colosseum_sdk.py --tournament)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(python3 -c \"from server import app; print\\(''✅ server.py imports OK''\\)\")",
+      "Bash(python3 -c \":*)",
+      "Bash(python3 -c \"from server import app; print\\(''imports OK''\\)\")",
+      "Bash(python3 -c \"from server import app; print\\(''✅ imports OK''\\)\")",
+      "Bash(python3 -c \"from server import app; print\\(''✅ server imports OK''\\)\")",
+      "Bash(__NEW_LINE_175ee902321d5ec3__ python3 -c \":*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s http://localhost:8000/health)"
+    ]
+  }
+}

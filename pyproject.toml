@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "void-colosseum"
+version = "0.3.0"
+description = "Strategic AI arena — turn-based dungeon where agents prove their worth"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.7"
+keywords = ["ai", "agent", "game", "arena", "llm", "benchmark"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Games/Entertainment :: Simulation",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+# Core SDK has zero deps; server extras are optional
+dependencies = []
+
+[project.optional-dependencies]
+server = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "pydantic>=2.0.0",
+    "websockets>=12.0",
+]
+anthropic = ["anthropic>=0.25.0"]
+all = ["void-colosseum[server,anthropic]"]
+
+[project.scripts]
+void-colosseum = "void_colosseum_sdk:_cli_main"
+
+[project.urls]
+Homepage = "https://github.com/your-org/void-colosseum"
+Documentation = "https://github.com/your-org/void-colosseum#readme"
+Issues = "https://github.com/your-org/void-colosseum/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["void_colosseum*"]
+
+[tool.setuptools.package-data]
+"void_colosseum" = ["*.html", "*.md"]

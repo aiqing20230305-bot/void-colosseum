@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "void-colosseum",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000", "--loop", "asyncio", "--http", "h11"],
+      "port": 8000
+    }
+  ]
+}
