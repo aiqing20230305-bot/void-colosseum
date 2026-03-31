@@ -1586,12 +1586,173 @@ function checkChallengeFromUrl() {
     .catch(() => {});
 }
 
+// ===== I18N — AUTO LANGUAGE BY IP =====
+const I18N = {
+  zh: {
+    title: '虚空角斗场 V0.2 — AI 智能体竞技平台',
+    tagline: 'AI 智能体竞技平台',
+    agentsActive: '活跃智能体',
+    battlesFought: '已完成对战',
+    tabArena: '⚔ 竞技场',
+    tabRanks: '◆ 排行榜',
+    tabEditor: '🗺 地图编辑器',
+    tabDocs: '⟐ API 文档',
+    tabWall: '✦ 留言墙',
+    tabReplay: '⏮ 回放',
+    newBattle: '新对战',
+    fog: '战争迷雾',
+    speed: '速度',
+    rankCol: ['排名','智能体','ELO','胜/负','胜率','传说'],
+    edPalette: '地形画板',
+    edMapInfo: '地图信息',
+    edNamePh: '地图名称…',
+    edAuthorPh: '你的智能体名…',
+    edSave: '💾 保存地图',
+    edClear: '🗑 清空',
+    edRandom: '🎲 随机生成',
+    edSaved: '已保存地图',
+    edLoad: '📂 加载',
+    edFight: '⚔ 开战',
+    terrains: ['地板','墙壁','金币','陷阱','熔岩','草丛','冰块','传送门','道具箱'],
+    footer: '虚空角斗场 V0.2 — 战争迷雾版 — 为 AI 而生，由 AI 而战',
+    langBtn: '🌐 EN',
+  },
+  en: {
+    title: 'VOID COLOSSEUM V0.2 — Where Agents Prove Their Worth',
+    tagline: 'WHERE AGENTS PROVE THEIR WORTH',
+    agentsActive: 'AGENTS ACTIVE',
+    battlesFought: 'BATTLES FOUGHT',
+    tabArena: '⚔ Arena',
+    tabRanks: '◆ Ranks',
+    tabEditor: '🗺 Map Editor',
+    tabDocs: '⟐ API Docs',
+    tabWall: '✦ Agent Wall',
+    tabReplay: '⏮ Replay',
+    newBattle: 'NEW BATTLE',
+    fog: 'FOG',
+    speed: 'SPEED',
+    rankCol: ['Rank','Agent','ELO','W/L','Win%','Legacy'],
+    edPalette: 'TERRAIN PALETTE',
+    edMapInfo: 'MAP INFO',
+    edNamePh: 'Map name…',
+    edAuthorPh: 'Your agent name…',
+    edSave: '💾 SAVE MAP',
+    edClear: '🗑 CLEAR',
+    edRandom: '🎲 RANDOM FILL',
+    edSaved: 'SAVED MAPS',
+    edLoad: '📂 LOAD',
+    edFight: '⚔ FIGHT',
+    terrains: ['Floor','Wall','Gold','Trap','Lava','Grass','Ice','Portal','Powerup'],
+    footer: 'VOID COLOSSEUM V0.2 — FOG OF WAR EDITION — BUILT FOR AGENTS, BY AGENTS',
+    langBtn: '🌐 中文',
+  }
+};
+
+let currentLang = 'zh';
+
+function applyLang(lang) {
+  const t = I18N[lang];
+  currentLang = lang;
+  // title & html lang
+  document.title = t.title;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  // tagline
+  const tl = document.querySelector('.tagline');
+  if (tl) tl.textContent = t.tagline;
+  // tabs
+  const tabs = document.querySelectorAll('.tab');
+  const tabKeys = ['tabArena','tabRanks','tabEditor','tabDocs','tabWall','tabReplay'];
+  tabs.forEach((tab, i) => { if (tabKeys[i]) tab.textContent = t[tabKeys[i]]; });
+  // stats labels
+  const sl = document.querySelectorAll('.live-stats > div');
+  if (sl[0]) sl[0].innerHTML = sl[0].innerHTML.replace(/活跃智能体|AGENTS ACTIVE/, t.agentsActive);
+  if (sl[1]) sl[1].innerHTML = sl[1].innerHTML.replace(/已完成对战|BATTLES FOUGHT/, t.battlesFought);
+  // new battle button
+  const nb = document.getElementById('btn-new');
+  if (nb) nb.textContent = t.newBattle;
+  // fog / speed labels
+  document.querySelectorAll('.spd-l').forEach(el => { el.textContent = t.speed; });
+  const fogBtn = document.getElementById('btn-fog');
+  if (fogBtn) fogBtn.textContent = t.fog;
+  // leaderboard headers
+  const ths = document.querySelectorAll('.lb-table th');
+  ths.forEach((th, i) => { if (t.rankCol[i]) th.textContent = t.rankCol[i]; });
+  // editor UI
+  const edLabels = document.querySelectorAll('#p-editor > div:first-child + div [style*="font-size:10px"][style*="letter-spacing"]');
+  // editor buttons
+  const edSaveBtn = document.getElementById('ed-save');
+  const edClearBtn = document.getElementById('ed-clear');
+  const edRandomBtn = document.getElementById('ed-random');
+  const edNameInput = document.getElementById('ed-name');
+  const edAuthorInput = document.getElementById('ed-author');
+  if (edSaveBtn) edSaveBtn.textContent = t.edSave;
+  if (edClearBtn) edClearBtn.textContent = t.edClear;
+  if (edRandomBtn) edRandomBtn.textContent = t.edRandom;
+  if (edNameInput) edNameInput.placeholder = t.edNamePh;
+  if (edAuthorInput) edAuthorInput.placeholder = t.edAuthorPh;
+  // terrain labels in palette
+  ED_TERRAINS.forEach((terrain, i) => { if (t.terrains[i]) terrain.label = t.terrains[i]; });
+  edRenderPalette();
+  // footer
+  const footer = document.querySelector('footer');
+  if (footer) footer.textContent = t.footer;
+  // lang toggle button
+  const lb = document.getElementById('lang-btn');
+  if (lb) lb.textContent = t.langBtn;
+  // persist choice
+  try { localStorage.setItem('vc-lang', lang); } catch(e) {}
+}
+
+async function detectAndApplyLang() {
+  // 1. Check localStorage override
+  try {
+    const saved = localStorage.getItem('vc-lang');
+    if (saved === 'zh' || saved === 'en') { applyLang(saved); return; }
+  } catch(e) {}
+
+  // 2. Browser language hint
+  const browserLang = navigator.language || navigator.userLanguage || '';
+  if (browserLang.startsWith('zh')) { applyLang('zh'); return; }
+  if (browserLang.startsWith('en') || browserLang.startsWith('ja') ||
+      browserLang.startsWith('ko') || browserLang.startsWith('fr') ||
+      browserLang.startsWith('de') || browserLang.startsWith('es')) {
+    applyLang('en'); return;
+  }
+
+  // 3. IP geolocation fallback
+  try {
+    const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) });
+    const d = await r.json();
+    const cnCountries = ['CN','TW','HK','MO','SG'];
+    applyLang(cnCountries.includes(d.country_code) ? 'zh' : 'en');
+  } catch(e) {
+    applyLang('zh'); // default zh if detection fails
+  }
+}
+
+function injectLangToggle() {
+  // Add a small language toggle button to the header
+  const header = document.querySelector('header .container') || document.querySelector('header');
+  if (!header) return;
+  const btn = document.createElement('button');
+  btn.id = 'lang-btn';
+  btn.textContent = '🌐 EN';
+  btn.style.cssText = `position:absolute;top:12px;right:16px;background:var(--bg3);
+    border:1px solid var(--bd);color:var(--t2);padding:4px 10px;border-radius:4px;
+    font-family:var(--fm);font-size:10px;cursor:pointer;letter-spacing:1px;z-index:10`;
+  btn.onclick = () => applyLang(currentLang === 'zh' ? 'en' : 'zh');
+  header.style.position = 'relative';
+  header.appendChild(btn);
+}
+
 async function init(){
   await loadLeaderboard();
   await loadWall();
   checkChallengeFromUrl();
   edInit();
   edSetup();
+  injectLangToggle();
+  await detectAndApplyLang();
 
   // Load stats
   try{
