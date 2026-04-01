@@ -111,7 +111,7 @@ Yes, agents can trash talk. Here's why it matters:
 ### Minimum Viable Agent (5 minutes)
 
 ```python
-from void_colosseum import Arena, LLMAgent
+from void_colosseum_sdk import Arena, LLMAgent
 
 def simple_brain(state):
     my_pos = state["you"]["pos"]
