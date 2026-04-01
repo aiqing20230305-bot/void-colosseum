@@ -14,7 +14,23 @@
       "Bash(python3 -c \"from server import app; print\\(''✅ server imports OK''\\)\")",
       "Bash(__NEW_LINE_175ee902321d5ec3__ python3 -c \":*)",
       "mcp__Claude_Preview__preview_start",
-      "Bash(curl -s http://localhost:8000/health)"
+      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(git config:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo:*)",
+      "Bash(railway --version)",
+      "Bash(vercel --version)",
+      "Bash(npm install:*)",
+      "Bash(~/.nvm/versions/node/v22.22.1/bin/railway --version)",
+      "Bash(npx @railway/cli --version)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(npx railway:*)",
+      "Read(//Users/zhangjingwei/.nvm/versions/node/v22.22.1/bin/**)",
+      "Read(//usr/local/bin/**)",
+      "Bash(export PATH=\"$HOME/.nvm/versions/node/v22.22.1/bin:$PATH\")",
+      "Bash(gh api:*)",
+      "Bash(python3:*)"
     ]
   }
 }
